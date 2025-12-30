@@ -99,7 +99,7 @@ download_optional() {
   local dest="${TARGET}/${rel}"
   local code
   mkdir -p "$(dirname "${dest}")"
-  code="$(curl -sS -o "${dest}" -w "%{http_code}" "${RAW_BASE}/${rel}" || true)"
+  code="$(curl -s -o "${dest}" -w "%{http_code}" "${RAW_BASE}/${rel}" 2>/dev/null || true)"
   if [[ "${code}" != "200" ]]; then
     echo "Optional file not found: ${rel}" >&2
     rm -f "${dest}"
@@ -114,7 +114,6 @@ download_required "tsconfig.app.json"
 download_required "tsconfig.node.json"
 download_required "tsconfig.vitest.json"
 download_required "env.d.ts"
-download_optional "type.d.ts"
 download_optional "src/type.d.ts"
 
 TMP_PACKAGE="$(mktemp)"
