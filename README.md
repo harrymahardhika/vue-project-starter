@@ -10,6 +10,9 @@ Run the installer directly with `curl | bash`:
 curl -fsSL https://raw.githubusercontent.com/harrymahardhika/vue-project-starter/main/create-vue-starter.sh | bash -s -- my-app
 ```
 
+Script source (GitHub UI):
+`https://github.com/harrymahardhika/vue-project-starter/blob/main/create-vue-starter.sh`
+
 ## Options
 - `--repo <url>`: change the config source repo.
 - `--branch <name>`: change the branch or tag.
