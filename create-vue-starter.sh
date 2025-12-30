@@ -147,13 +147,9 @@ echo "Installing dev dependencies..."
   vitest@^2.1.8 \
   vue-tsc@^2.1.10)
 
-cd "${TARGET}"
-
-echo "Created Vue starter at: ${TARGET}"
+echo ""
+echo "✓ Created Vue starter at: ${TARGET}"
+echo ""
 echo "Next steps:"
+echo "  cd ${TARGET}"
 echo "  pnpm dev"
-
-if [[ "${BASH_SOURCE[0]:-}" == "$0" ]] && [[ ! -t 0 ]] && [[ -t 1 ]]; then
-  echo "Opened a subshell in: ${TARGET}"
-  exec "${SHELL:-bash}" -i
-fi
