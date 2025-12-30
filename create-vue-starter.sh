@@ -95,6 +95,7 @@ download_required() {
   code="$(curl -s -o "${dest}" -w "%{http_code}" "${RAW_BASE}/${rel}" 2>/dev/null || true)"
   if [[ "${code}" != "200" ]]; then
     echo "Required file missing from template: ${rel}" >&2
+    echo "URL: ${RAW_BASE}/${rel}" >&2
     rm -f "${dest}"
     exit 1
   fi
