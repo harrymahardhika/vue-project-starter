@@ -92,6 +92,7 @@ download_required() {
   local dest="${TARGET}/${rel}"
   local code
   mkdir -p "$(dirname "${dest}")"
+  echo "Fetching ${rel}..."
   code="$(curl -s -o "${dest}" -w "%{http_code}" "${RAW_BASE}/${rel}" 2>/dev/null || true)"
   if [[ "${code}" != "200" ]]; then
     echo "Required file missing from template: ${rel}" >&2
@@ -106,6 +107,7 @@ download_optional() {
   local dest="${TARGET}/${rel}"
   local code
   mkdir -p "$(dirname "${dest}")"
+  echo "Fetching ${rel}..."
   code="$(curl -s -o "${dest}" -w "%{http_code}" "${RAW_BASE}/${rel}" 2>/dev/null || true)"
   if [[ "${code}" != "200" ]]; then
     echo "Optional file not found: ${rel}" >&2
@@ -124,7 +126,14 @@ download_required "env.d.ts"
 download_optional "src/type.d.ts"
 
 TMP_PACKAGE="$(mktemp)"
-curl -fsSL "${RAW_BASE}/package.json" -o "${TMP_PACKAGE}"
+echo "Fetching package.json..."
+PACKAGE_CODE="$(curl -s -o "${TMP_PACKAGE}" -w "%{http_code}" "${RAW_BASE}/package.json" 2>/dev/null || true)"
+if [[ "${PACKAGE_CODE}" != "200" ]]; then
+  echo "Required file missing from template: package.json" >&2
+  echo "URL: ${RAW_BASE}/package.json" >&2
+  rm -f "${TMP_PACKAGE}"
+  exit 1
+fi
 
 install_from_template() {
   local dep_type="$1"
