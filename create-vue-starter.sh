@@ -90,8 +90,14 @@ pnpm create vite@latest "${TARGET}" -- --template vue-ts
 download_required() {
   local rel="$1"
   local dest="${TARGET}/${rel}"
+  local code
   mkdir -p "$(dirname "${dest}")"
-  curl -fsSL "${RAW_BASE}/${rel}" -o "${dest}"
+  code="$(curl -s -o "${dest}" -w "%{http_code}" "${RAW_BASE}/${rel}" 2>/dev/null || true)"
+  if [[ "${code}" != "200" ]]; then
+    echo "Required file missing from template: ${rel}" >&2
+    rm -f "${dest}"
+    exit 1
+  fi
 }
 
 download_optional() {
@@ -142,11 +148,13 @@ rm -f "${TMP_PACKAGE}"
 
 (cd "${TARGET}" && pnpm install && printf 'y\n' | pnpm approve-builds)
 
-if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then
-  cd "${TARGET}"
-fi
+cd "${TARGET}"
 
 echo "Created Vue starter at: ${TARGET}"
 echo "Next steps:"
-echo "  cd ${TARGET}"
 echo "  pnpm dev"
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]] && [[ ! -t 0 ]] && [[ -t 1 ]]; then
+  echo "Opened a subshell in: ${TARGET}"
+  exec "${SHELL:-bash}" -i
+fi
