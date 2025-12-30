@@ -147,7 +147,7 @@ echo "Installing dev dependencies..."
   vitest@^2.1.8 \
   vue-tsc@^2.1.10)
 
-(cd "${TARGET}" && pnpm install && printf 'y\n' | pnpm approve-builds)
+(cd "${TARGET}" && pnpm install && pnpm approve-builds)
 
 cd "${TARGET}"
 
@@ -155,7 +155,7 @@ echo "Created Vue starter at: ${TARGET}"
 echo "Next steps:"
 echo "  pnpm dev"
 
-if [[ "${BASH_SOURCE[0]}" == "$0" ]] && [[ ! -t 0 ]] && [[ -t 1 ]]; then
+if [[ "${BASH_SOURCE[0]:-}" == "$0" ]] && [[ ! -t 0 ]] && [[ -t 1 ]]; then
   echo "Opened a subshell in: ${TARGET}"
   exec "${SHELL:-bash}" -i
 fi
