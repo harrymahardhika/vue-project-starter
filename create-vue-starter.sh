@@ -147,8 +147,6 @@ echo "Installing dev dependencies..."
   vitest@^2.1.8 \
   vue-tsc@^2.1.10)
 
-(cd "${TARGET}" && pnpm install && pnpm approve-builds)
-
 cd "${TARGET}"
 
 echo "Created Vue starter at: ${TARGET}"
