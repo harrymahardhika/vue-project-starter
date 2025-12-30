@@ -97,8 +97,10 @@ download_required() {
 download_optional() {
   local rel="$1"
   local dest="${TARGET}/${rel}"
+  local code
   mkdir -p "$(dirname "${dest}")"
-  if ! curl -fsSL "${RAW_BASE}/${rel}" -o "${dest}"; then
+  code="$(curl -sS -o "${dest}" -w "%{http_code}" "${RAW_BASE}/${rel}" || true)"
+  if [[ "${code}" != "200" ]]; then
     echo "Optional file not found: ${rel}" >&2
     rm -f "${dest}"
   fi
@@ -139,7 +141,11 @@ install_from_template "devDependencies" "-D"
 
 rm -f "${TMP_PACKAGE}"
 
-(cd "${TARGET}" && pnpm install)
+(cd "${TARGET}" && pnpm install && printf 'y\n' | pnpm approve-builds)
+
+if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then
+  cd "${TARGET}"
+fi
 
 echo "Created Vue starter at: ${TARGET}"
 echo "Next steps:"
