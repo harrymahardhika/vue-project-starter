@@ -125,36 +125,27 @@ download_required "tsconfig.vitest.json"
 download_required "env.d.ts"
 download_optional "src/type.d.ts"
 
-TMP_PACKAGE="$(mktemp)"
-echo "Fetching package.json..."
-PACKAGE_CODE="$(curl -s -o "${TMP_PACKAGE}" -w "%{http_code}" "${RAW_BASE}/package.json" 2>/dev/null || true)"
-if [[ "${PACKAGE_CODE}" != "200" ]]; then
-  echo "Required file missing from template: package.json" >&2
-  echo "URL: ${RAW_BASE}/package.json" >&2
-  rm -f "${TMP_PACKAGE}"
-  exit 1
-fi
+echo "Installing dependencies..."
+(cd "${TARGET}" && pnpm add vue@^3.5.13)
 
-install_from_template() {
-  local dep_type="$1"
-  local flag="$2"
-  local list
-  list="$(node -e "
-    const fs = require('fs');
-    const pkg = JSON.parse(fs.readFileSync('${TMP_PACKAGE}', 'utf8'));
-    const deps = pkg['${dep_type}'] || {};
-    const entries = Object.entries(deps).map(([k,v]) => \`\${k}@\${v}\`);
-    if (entries.length) console.log(entries.join(' '));
-  ")"
-  if [[ -n "${list}" ]]; then
-    (cd "${TARGET}" && pnpm add ${flag} ${list})
-  fi
-}
-
-install_from_template "dependencies" ""
-install_from_template "devDependencies" "-D"
-
-rm -f "${TMP_PACKAGE}"
+echo "Installing dev dependencies..."
+(cd "${TARGET}" && pnpm add -D \
+  @eslint/js@^9.17.0 \
+  @tsconfig/node22@^22.0.0 \
+  @types/node@^22.10.2 \
+  @vitejs/plugin-vue@^5.2.1 \
+  @vue/test-utils@^2.4.6 \
+  @vue/tsconfig@^0.7.0 \
+  eslint@^9.17.0 \
+  eslint-plugin-vue@^9.31.0 \
+  globals@^15.14.0 \
+  jsdom@^25.0.1 \
+  prettier@^3.4.2 \
+  typescript@~5.6.3 \
+  typescript-eslint@^8.18.1 \
+  vite@^6.0.3 \
+  vitest@^2.1.8 \
+  vue-tsc@^2.1.10)
 
 (cd "${TARGET}" && pnpm install && printf 'y\n' | pnpm approve-builds)
 
