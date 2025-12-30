@@ -131,6 +131,8 @@ echo "Installing dependencies..."
 echo "Installing dev dependencies..."
 (cd "${TARGET}" && pnpm add -D \
   @eslint/js@^9.17.0 \
+  @intlify/unplugin-vue-i18n@^5.2.0 \
+  @tailwindcss/vite@^4.0.0 \
   @tsconfig/node22@^22.0.0 \
   @types/node@^22.10.2 \
   @vitejs/plugin-vue@^5.2.1 \
@@ -144,6 +146,7 @@ echo "Installing dev dependencies..."
   typescript@~5.6.3 \
   typescript-eslint@^8.18.1 \
   vite@^6.0.3 \
+  vite-plugin-vue-devtools@^7.6.10 \
   vitest@^2.1.8 \
   vue-tsc@^2.1.10)
 
